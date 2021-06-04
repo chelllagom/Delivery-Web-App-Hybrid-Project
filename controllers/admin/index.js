@@ -2,20 +2,22 @@ const { Router } = require('express');
 const router = Router();
 const ctrl = require('./admin.ctrl');
 const upload = require('../../middleware/multer');
+const csrfProtection = require('../../middleware/csrf');
 
 router.get('/shops', ctrl.get_shops );
 
-router.get('/shops/write', ctrl.get_shops_write );
+router.get('/shops/write', csrfProtection, ctrl.get_shops_write );
 
 //html의 input name이 thumbnail이기 때문에
 //파일 요청이 1건이면 single, 여러 건이면 array로 처리
-router.post('/shops/write', upload.single('thumbnail'), ctrl.post_shops_write );
+//csrfToken이 enctype="multipart/form-data" 이후에 나와야 해서 순서가 뒤에 있음
+router.post('/shops/write', upload.single('thumbnail'), csrfProtection, ctrl.post_shops_write );
 
 router.get('/shops/detail/:id', ctrl.get_shops_detail );
 
-router.get('/shops/edit/:id', ctrl.get_shops_edit );
+router.get('/shops/edit/:id', csrfProtection, ctrl.get_shops_edit );
 
-router.post('/shops/edit/:id', upload.single('thumbnail'), ctrl.post_shops_edit );
+router.post('/shops/edit/:id', upload.single('thumbnail'), csrfProtection, ctrl.post_shops_edit );
 
 router.get('/shops/delete/:id', ctrl.get_shops_delete );
 
