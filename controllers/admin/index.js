@@ -3,8 +3,12 @@ const router = Router();
 const ctrl = require('./admin.ctrl');
 const upload = require('../../middleware/multer');
 const csrfProtection = require('../../middleware/csrf');
+const loginRequired = require('../../middleware/loginRequired');
 
 router.get('/shops', ctrl.get_shops );
+
+//이부분 아래로는 미들웨어가 작동함(로그인이 되어 있어야 진행 가능)
+//router.use(loginRequired);
 
 router.get('/shops/write', csrfProtection, ctrl.get_shops_write );
 
