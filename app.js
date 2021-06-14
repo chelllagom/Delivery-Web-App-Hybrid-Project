@@ -86,16 +86,23 @@ class App {
 
     setSession() {
 
+        const SequelizeStore = require('connect-session-sequelize')(session.Store);
+
         //session 관련 셋팅
-        this.app.use(session({
+        this.app.sessionMiddleWare =  session({
             secret: 'fastcampus',
             resave: false,
             saveUninitialized: true,
             cookie: {
                 maxAge: 2000 * 60 * 60 //지속시간 2시간
-            }
+            },
             //세션 설정은 store로..
-        }));
+            store : new SequelizeStore({
+                db : db.sequelize
+            })
+        });
+
+        this.app.use(this.app.sessionMiddleWare);
 
         //passport 적용
         this.app.use(passport.initialize());
